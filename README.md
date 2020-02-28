@@ -1,1 +1,1 @@
-DevOps Lab 2020 (September-December)
+DevOps Lab 2020 (January-April)
