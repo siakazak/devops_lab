@@ -1,4 +1,5 @@
 # Solution by Siarhei Kazak
+# Assuming you already have pyenv installed and $PATH variable modificated to use it
 
 #!/bin/bash
 
@@ -34,7 +35,7 @@ touch $LOGFILE
 
 for V in ${VERSIONS[@]}; do
 	NAME="$NAME_PREFIX-$V"
-	pyenv install -s $V >> $LOGFILE && echo -e "ok\n" || echo -e "\nERROR - not created"
+	pyenv install -s $V >> $LOGFILE && echo -e "ok\n" || echo -e "\nERROR - not installed"
 	echo -e "Creating virtualenv for Python-$V...\n"
 	pyenv virtualenv $V $NAME >> $LOGFILE && echo -e "ok\n" || echo -e "\nERROR - not created"
 	pyenv local $NAME
