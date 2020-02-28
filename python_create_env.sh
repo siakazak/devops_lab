@@ -11,6 +11,8 @@ function usage() {
 	echo -e "<CTRL-C> to cancel\n"
 }
 
+# Check arguments
+
 if [[ "$#" == 0  ]]; then
 	echo "*********************************************************"
 	echo -e "*WARN* - Script takes valid python versions as args"
@@ -21,7 +23,9 @@ if [[ "$#" == 0  ]]; then
 fi
 
 NAME_PREFIX="testenv"
-echo $PATH
+
+# Install versions and create virtualenvs
+
 for V in ${VERSIONS[@]}; do
 	NAME="$NAME_PREFIX-$V"
 	pyenv install -s $V >/dev/null
