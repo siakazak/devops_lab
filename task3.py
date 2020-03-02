@@ -1,4 +1,4 @@
-#!/home/student/.pyenv/shims/python
+#!/bin/env python
 # task3
 
 import re

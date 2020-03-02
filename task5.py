@@ -1,4 +1,4 @@
-#!/home/student/.pyenv/shims/python
+#!/bin/env python
 # task5
 
 inp = input().split(" ")
