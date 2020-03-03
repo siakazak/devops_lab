@@ -5,10 +5,10 @@ import re
 
 test = str(input())
 
-if re.match("^[0-9]+[+\-/*][0-9]+=[0-9]+$", test):
+if re.match("^[0-9]+(?![.,])[*-/][0-9]+=[0-9]+$", test):
 
     # expression before '='
-    expr = re.search("^[0-9]+[+\-/*][0-9]+", test)
+    expr = re.search("^[0-9]+(?![.,])[*-/][0-9]+", test)
 
     # result after '='
     res = re.search("[0-9]+$", test)
