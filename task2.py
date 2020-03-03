@@ -12,6 +12,4 @@ for el in set(list1).intersection(set(list2)):
 out.sort()
 
 # Put elements into a single string
-res = ' '.join(map(str, out))
-
-print(res)
+print(' '.join(map(str, out)))
