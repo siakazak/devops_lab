@@ -9,7 +9,7 @@ commands = []
 # number of commands
 num = int(input())
 
-for i in range(num):
+for _i in range(num):
     commands.append(input())
 
 for c in commands:
