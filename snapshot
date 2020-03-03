@@ -1,0 +1,33 @@
+#!/bin/env python
+
+
+from snapshot import Snapshot
+from timer import RepeatedTimer
+import argparse
+
+parser = argparse.ArgumentParser(
+    description='Create a snapshot of FS current state.')
+parser.add_argument('-d', dest='dir', default='.',
+                    help='path to directory where to store snapshot (default: ./)')
+parser.add_argument('-t', dest='timeout', default=300,
+                    help='snapshot timeout in seconds (default: 300)')
+parser.add_argument('-f', dest='format', default='json',
+                    help='txt or json (default: json)')
+
+args = parser.parse_args()
+
+count = 0
+
+lpath = args.dir
+lprefix = '/snapshot.'
+ltype = args.format
+timeout = int(args.timeout)
+
+
+def snap(logtype):
+    global count
+    count += 1
+    sn = Snapshot(logtype, count)
+    sn.write_to_file(lpath + lprefix + ltype, ltype)
+
+rt = RepeatedTimer(timeout, snap, ltype)
