@@ -3,7 +3,7 @@
 
 import re
 
-test = str(input())
+test = input()
 
 if re.match("^[0-9]+(?![.,])[*-/][0-9]+=[0-9]+$", test):
 

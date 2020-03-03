@@ -22,11 +22,8 @@ for c in commands:
     elif c == 'reverse':
         lst.reverse()
     elif re.match("^insert [0-9]+ [0-9]+", c):
-        c = list(c.split(" "))
-        lst.insert(int(c[1]), int(c[2]))
+        lst.insert(int(c.split()[1]), int(c.split()[2]))
     elif re.match("^append [0-9]+", c):
-        c = list(c.split(" "))
-        lst.append(int(c[1]))
+        lst.append(int(c.split()[1]))
     elif re.match("^remove [0-9]+", c):
-        c = list(c.split(" "))
-        lst.remove(int(c[1]))
+        lst.remove(int(c.split()[1]))
