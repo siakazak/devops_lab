@@ -61,4 +61,3 @@ class Snapshot:
 
                 json.dump(data, outfile, indent=1)
                 outfile.write("\n")
-            outfile.close()
