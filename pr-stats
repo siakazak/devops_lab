@@ -29,20 +29,20 @@ user1 = GithubUser()
 # workaround for default value assignation
 if not args.user:
     args.user = user1.login
+user1.user = args.user
 
 if args.list:
-    print("-L option is provided, avoiding all others")
-    user1.get_repos(args.user)
+    user1.get_repos()
     exit(0)
 elif not args.repo:
     print(user1)
 else:
-    user1.get_repo(args.user, args.repo)
+    user1.get_repo(args.repo)
     if args.time:
-        user1.get_time(args.user, args.repo)
+        user1.get_time(args.repo)
     if args.branches:
-        user1.get_branches(args.user, args.repo)
+        user1.get_branches(args.repo)
     if args.labels:
-        user1.get_labels(args.user, args.repo)
+        user1.get_labels(args.repo)
     if args.pulls:
-        user1.get_pulls(args.user, args.repo)
+        user1.get_pulls(args.repo)
