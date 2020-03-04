@@ -3,7 +3,7 @@
 import argparse
 from githubuser import GithubUser
 
-parser = argparse.ArgumentParser(description='Demo GitHub REST API script.')
+parser = argparse.ArgumentParser(description='Demo GitHub REST API script by Siarhei Kazak')
 parser.add_argument('repo', nargs='?', type=str,
                     help='Repo name')
 parser.add_argument('-u', '--user', dest='user',
@@ -19,7 +19,7 @@ parser.add_argument('-t', '--time', action='store_true',
 parser.add_argument('-p', '--pulls', action='store_true',
                     help='List all pull request of [repo] (if none - avoiding)')
 parser.add_argument('-v', '--version', action='version',
-                    version='%(prog)s 0.2')
+                    version='%(prog)s 0.2.8')
 
 args = parser.parse_args()
 
