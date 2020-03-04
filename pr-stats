@@ -21,7 +21,7 @@ class GithubUser:
             if input('Remember login? y/N: ') == 'y':
                 with open('./pr-stats.login', "w") as outfile:
                     outfile.write(self.login)
-                print('Login can be edited in ./pr-stats.login')
+                print('Login stored in ./pr-stats.login\nIn order to change it just remove the file')
         self.passwd = getpass.getpass(prompt='Password: ', stream=None)
 
         while requests.get('https://api.github.com/user',
@@ -34,108 +34,98 @@ class GithubUser:
     def get_repos(self, user):
         rj = requests.get('https://api.github.com/users/' +
                           user + '/repos', auth=(self.login, self.passwd)).json()
-        print('repos list:\n')
+        print("%s's repos list(%d):" % (user, len(rj)))
         for i in range(len(rj)):
-            if len(rj[i]['name']) <= 5:
-                sep = '\t\t\t\t'
-            elif len(rj[i]['name']) <= 11:
-                sep = '\t\t\t'
-            elif len(rj[i]['name']) <= 18:
-                sep = '\t\t'
-            else:
-                sep = '\t'
-            print(str(i + 1) + '. ' + rj[i]['name'], rj[i]['svn_url'], sep=sep)
+            print("%d:" % (i + 1), 'Name: %s' % rj[i]['name'], 'URL: %s' % rj[i]['svn_url'], sep='\n')
 
     def get_branches(self, user, repo):
         rj = requests.get('https://api.github.com/repos/' + user + '/' +
                           repo + '/branches', auth=(self.login, self.passwd)).json()
-        print('branches list:\n')
+        print('branches list (%s):' % len(rj))
 
         for i in range(len(rj)):
-            if len(rj[i]['name']) <= 3:
-                sep = '\t\t\t\t'
-            elif len(rj[i]['name']) <= 7:
-                sep = '\t\t\t'
-            elif len(rj[i]['name']) <= 15:
-                sep = '\t\t'
-            else:
-                sep = '\t'
-            print(str(i + 1) + '. ' + rj[i]['name'], 'https://github.com/' +
-                  user + '/' + repo + '/tree/' + rj[i]['name'], sep=sep)
-
+            print('%d:' % (i+1))
+            print('Name: %s' % rj[i]['name'])
+            print('URL: https://github.com/%s/%s/tree/%s' % (user, repo, rj[i]['name']))
         print()
+
 
     def get_labels(self, user, repo):
         rj = requests.get('https://api.github.com/repos/' + user +
                           '/' + repo + '/labels', auth=(self.login, self.passwd)).json()
-        print('labels list:\n')
+        print('labels list (%s):' % len(rj))
 
         for i in range(len(rj)):
-            print(str(i + 1) + '. ' + rj[i]['name'])
+            print("'%s'" % rj[i]['name'])
 
         print()
 
     def get_pulls(self, user, repo):
         rj = requests.get('https://api.github.com/repos/' + user +
                           '/' + repo + '/pulls', auth=(self.login, self.passwd)).json()
-        print('pull requests:\n')
+        print('pull requests (%s):' % len(rj))
 
         for i in range(len(rj)):
-            print(str(i + 1) + '. ' + rj[i]['title'])
-            print('Status:\t\t', rj[i]['state'])
-            print('Created at:\t', str(
-                rj[i]['created_at']).replace('T,', ' '), '')
+            print('%d:' % (i+1))
+            print("Title:\t\t'%s'" % rj[i]['title'])
+            print('Status:', rj[i]['state'], sep='\t\t')
+            print('Created:', str(rj[i]['created_at']).replace('T', ' at ').replace('Z', ' '), sep='\t')
             labels = ''
             for ll in rj[i]['labels']:
-                labels += '[' + ll['name'] + '] '
-            print('Labels:\t\t', labels)
-            print()
-
-    def __str__(self):
-        return str(requests.get('https://api.github.com/user',
-                                auth=(self.login, self.passwd)).content)
+                labels += "'" + ll['name'] + "' "
+            print('Labels:', labels, sep='\t\t')
+        print()
 
     def get_time(self, user, repo):
         rj = requests.get('https://api.github.com/repos/' + user +
                           '/' + repo, auth=(self.login, self.passwd)).json()
-        print('Created at:', str(rj['created_at']).replace('T,', ' '))
-        print('Updated at:', str(rj['updated_at']).replace('T,', ' '))
-        print('Pushed at:', str(rj['pushed_at']).replace('T,', ' '))
+        print('access info:')
+        print('Created on:', str(rj['created_at']).replace('T', ' at ').replace('Z', ''))
+        print('Updated on:', str(rj['updated_at']).replace('T', ' at ').replace('Z', ''))
+        print('Pushed on:', str(rj['pushed_at']).replace('T', ' at ').replace('Z', ''))
         print()
 
     def __str__(self):
-        return str(requests.get('https://api.github.com/user',
-                                auth=(self.login, self.passwd)).content)
+        rj = requests.get('https://api.github.com/users/%s' % args.user,
+                                auth=(self.login, self.passwd)).json()
 
-user1 = GithubUser()
+        return 'user info:\nLogin: %s\nID: %d\nName: %s\nCompany: %s\nLocation: %s\nFollowers: %s\nEmail: %s\nCreated: %s\nURL: %s\n' % (rj['login'], rj['id'], rj['name'], rj['company'], rj['location'], rj['followers'], rj['email'], rj['created_at'].replace('T', ' at ').replace('Z', ''), rj['html_url'])
+
 
 parser = argparse.ArgumentParser(description='Demo GitHub REST API script.')
-parser.add_argument('-u', '--user', dest='user', default=user1.login,
-                    help='GitHub user to inspect')
-parser.add_argument('repo', nargs='?',
+parser.add_argument('repo', nargs='?', type=str,
                     help='Repo name')
-parser.add_argument('-a', '--all', action='store_true', help='List all repos')
+parser.add_argument('-u', '--user', dest='user',
+                    help='GitHub user to inspect (default: <GitHub login>)')
+parser.add_argument('-L', '--list', action='store_true', help='List all repos of USER')
 parser.add_argument('-b', '--branches', action='store_true',
-                    help='List all branches of choosen [repo]')
+                    help='List all branches of choosen [repo] (if none - avoiding)')
 parser.add_argument('-l', '--labels', action='store_true',
-                    help='List all labels attached to [repo]')
+                    help='List all labels attached to [repo] (if none - avoiding)')
 parser.add_argument('-t', '--time', action='store_true',
-                    help='Print [repo] creation time')
+                    help='Print access info for [repo] (if none - avoiding)')
 parser.add_argument('-p', '--pulls', action='store_true',
-                    help='Print [repo] creation time')
+                    help='List all pull request of [repo] (if none - avoiding)')
 parser.add_argument('-v', '--version', action='version',
-                    version='%(prog)s 2.0')
+                    version='%(prog)s 0.2')
 
 args = parser.parse_args()
 
-if args.all:
+# log in to GitHub and optionally store login
+user1 = GithubUser()
+
+# workaround for default value assignation
+if not args.user:
+    args.user = user1.login
+
+if args.list:
+    print("-L option is provided, avoiding all others")
     user1.get_repos(args.user)
     exit(0)
-
-if args.repo:
-    print('Repository <' + args.repo + '> at https://github.com/' +
-          args.user + '/' + args.repo)
-    print()
+elif not args.repo:
+    print(user1)
+else:
+    print("%s's [%s] - https://github.com/%s/%s\n" % (args.user, args.repo, args.user, args.repo))
     if args.time:
         user1.get_time(args.user, args.repo)
     if args.branches:
