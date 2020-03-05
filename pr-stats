@@ -3,7 +3,8 @@
 import argparse
 from githubuser import GithubUser
 
-parser = argparse.ArgumentParser(description='Demo GitHub REST API script by Siarhei Kazak')
+parser = argparse.ArgumentParser(
+    description='Demo GitHub REST API script by Siarhei Kazak')
 parser.add_argument('repo', nargs='?', type=str,
                     help='Repo name')
 parser.add_argument('-u', '--user', dest='user',

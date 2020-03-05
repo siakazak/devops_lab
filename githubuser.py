@@ -79,24 +79,26 @@ class GithubUser:
             print('%d:' % (i + 1))
             print("Title: '%s'" % rj[i]['title'])
             print('Status:', rj[i]['state'])
-            print('Created:', str(rj[i]['created_at']).replace('T', ' at ').replace('Z', ' '))
+            print('Created:', str(rj[i]['created_at']).replace(
+                'T', ' at ').replace('Z', ' '))
             labels = ''
             for ll in rj[i]['labels']:
                 labels += "'" + ll['name'] + "' "
             print('Labels:', labels)
             if self.commits:
                 commits = rj[i]['commits_url']
-                rcj = requests.get(commits, auth=(self.login, self.passwd)).json()
+                rcj = requests.get(commits, auth=(
+                    self.login, self.passwd)).json()
                 print('Commits (%d):' % len(rcj))
                 print()
                 for cc in range(len(rcj)):
                     print('%d:' % (cc + 1))
-                    print('\tCommitter: ', rcj[cc]['commit']['committer']['name'])
+                    print('\tCommitter: ', rcj[cc][
+                          'commit']['committer']['name'])
                     print('\tDate: ', rcj[cc]['commit']['committer']['date'])
                     print('\tMessage: ', rcj[cc]['commit']['message'])
                     print('\tComments: ', rcj[cc]['commit']['comment_count'])
             print()
-
 
     def get_time(self):
         rj = requests.get('https://api.github.com/repos/%s/%s' % (self.user, self.repo),
