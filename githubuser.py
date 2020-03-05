@@ -87,8 +87,7 @@ class GithubUser:
             print('Labels:', labels)
             if self.commits:
                 commits = rj[i]['commits_url']
-                rcj = requests.get(commits, auth=(
-                    self.login, self.passwd)).json()
+                rcj = requests.get(commits, auth=(self.login, self.passwd)).json()
                 print('Commits (%d):' % len(rcj))
                 print()
                 for cc in range(len(rcj)):
