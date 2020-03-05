@@ -18,6 +18,8 @@ parser.add_argument('-t', '--time', action='store_true',
                     help='Print access info for [repo] (if none - avoiding)')
 parser.add_argument('-p', '--pulls', action='store_true',
                     help='List all pull request of [repo] (if none - avoiding)')
+parser.add_argument('-c', '--commits', action='store_true',
+                    help='Print commits alongside pull request [repo] (if none - avoiding)')
 parser.add_argument('-v', '--version', action='version',
                     version='%(prog)s 0.2.8')
 
@@ -30,6 +32,8 @@ user1 = GithubUser()
 if not args.user:
     args.user = user1.login
 user1.user = args.user
+user1.commits = args.commits
+user1.repo = args.repo
 
 if args.list:
     user1.get_repos()
@@ -37,12 +41,12 @@ if args.list:
 elif not args.repo:
     print(user1)
 else:
-    user1.get_repo(args.repo)
+    user1.get_repo()
     if args.time:
-        user1.get_time(args.repo)
+        user1.get_time()
     if args.branches:
-        user1.get_branches(args.repo)
+        user1.get_branches()
     if args.labels:
-        user1.get_labels(args.repo)
+        user1.get_labels()
     if args.pulls:
-        user1.get_pulls(args.repo)
+        user1.get_pulls()

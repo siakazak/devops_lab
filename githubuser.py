@@ -24,6 +24,8 @@ class GithubUser:
             self.passwd = getpass.getpass(prompt='Password:', stream=None)
 
         self.user = self.login
+        self.repo = None
+        self.commits = False
         print('Logged in as', self.login, '\n')
 
     def get_repos(self):
@@ -34,20 +36,20 @@ class GithubUser:
             print("%d:" % (i + 1), 'Name: %s' % rj[i]['name'], 'URL: %s' % rj[i]['svn_url'],
                   sep='\n')
 
-    def get_repo(self, repo):
-        r = requests.get('https://api.github.com/repos/%s/%s' % (self.user, repo),
+    def get_repo(self):
+        r = requests.get('https://api.github.com/repos/%s/%s' % (self.user, self.repo),
                          auth=(self.login, self.passwd))
         rj = r.json()
         if r.status_code != 200:
             print("ERROR: user %s doesn't have a repo named '%s'" %
-                  (self.user, repo))
+                  (self.user, self.repo))
             exit(1)
         else:
             print("%s's [%s] - %s\n"
                   % (rj['owner']['login'], rj['name'], rj['html_url']))
 
-    def get_branches(self, repo):
-        rj = requests.get('https://api.github.com/repos/%s/%s/branches' % (self.user, repo),
+    def get_branches(self):
+        rj = requests.get('https://api.github.com/repos/%s/%s/branches' % (self.user, self.repo),
                           auth=(self.login, self.passwd)).json()
         print('branches list (%s):' % len(rj))
 
@@ -55,11 +57,11 @@ class GithubUser:
             print('%d:' % (i + 1))
             print('Name: %s' % rj[i]['name'])
             print('URL: https://github.com/%s/%s/tree/%s' %
-                  (self.user, repo, rj[i]['name']))
+                  (self.user, self.repo, rj[i]['name']))
         print()
 
-    def get_labels(self, repo):
-        rj = requests.get('https://api.github.com/repos/%s/%s/labels' % (self.user, repo),
+    def get_labels(self):
+        rj = requests.get('https://api.github.com/repos/%s/%s/labels' % (self.user, self.repo),
                           auth=(self.login, self.passwd)).json()
         print('labels list (%s):' % len(rj))
 
@@ -68,25 +70,36 @@ class GithubUser:
 
         print()
 
-    def get_pulls(self, repo):
-        rj = requests.get('https://api.github.com/repos/%s/%s/pulls' % (self.user, repo),
+    def get_pulls(self):
+        rj = requests.get('https://api.github.com/repos/%s/%s/pulls' % (self.user, self.repo),
                           auth=(self.login, self.passwd)).json()
         print('pull requests (%s):' % len(rj))
 
         for i in range(len(rj)):
             print('%d:' % (i + 1))
-            print("Title:\t\t'%s'" % rj[i]['title'])
-            print('Status:', rj[i]['state'], sep='\t\t')
-            print('Created:', str(rj[i]['created_at']).replace('T', ' at ').replace('Z', ' '),
-                  sep='\t')
+            print("Title: '%s'" % rj[i]['title'])
+            print('Status:', rj[i]['state'])
+            print('Created:', str(rj[i]['created_at']).replace('T', ' at ').replace('Z', ' '))
             labels = ''
             for ll in rj[i]['labels']:
                 labels += "'" + ll['name'] + "' "
-            print('Labels:', labels, sep='\t\t')
-        print()
+            print('Labels:', labels)
+            if self.commits:
+                commits = rj[i]['commits_url']
+                rcj = requests.get(commits, auth=(self.login, self.passwd)).json()
+                print('Commits (%d):' % len(rcj))
+                print()
+                for cc in range(len(rcj)):
+                    print('%d:' % (cc + 1))
+                    print('\tCommitter: ', rcj[cc]['commit']['committer']['name'])
+                    print('\tDate: ', rcj[cc]['commit']['committer']['date'])
+                    print('\tMessage: ', rcj[cc]['commit']['message'])
+                    print('\tComments: ', rcj[cc]['commit']['comment_count'])
+            print()
 
-    def get_time(self, repo):
-        rj = requests.get('https://api.github.com/repos/%s/%s' % (self.user, repo),
+
+    def get_time(self):
+        rj = requests.get('https://api.github.com/repos/%s/%s' % (self.user, self.repo),
                           auth=(self.login, self.passwd)).json()
         print('access info:')
         print('Created on:', str(rj['created_at']).replace(
