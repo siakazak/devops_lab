@@ -25,6 +25,7 @@ def sd_in_range(nrange):
 
     return out
 
+
 if __name__ == "__main__":
     sd_nums = sd_in_range(input().split())
     print(sd_nums)
