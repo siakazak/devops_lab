@@ -29,7 +29,6 @@ def tree(path):
     path = os.path.abspath(path)
     dirs, files = listdir(path)[:2]
 
-    print('[%s]' % path)
     if args.sort == 'name':
         dirs.sort()
         files.sort()
@@ -39,6 +38,8 @@ def tree(path):
     if args.filter:
         files = filter(lambda x: x.endswith('.%s' % args.filter), files)
         dirs = []
+    else:
+        print('[%s]' % path)
 
     walk(path, dirs, files)
 
