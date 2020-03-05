@@ -29,7 +29,7 @@ class GithubUser:
         print('Logged in as', self.login, '\n')
 
     def get_repos(self):
-        rj = requests.get('https://api.github.com/users/%s/repos' % self.user,
+        rj = requests.get('https://api.github.com/users/%s/repos?page=1&per_page=100' % self.user,
                           auth=(self.login, self.passwd)).json()
         print("%s's repos list(%d):" % (self.user, len(rj)))
         for i in range(len(rj)):
@@ -49,8 +49,8 @@ class GithubUser:
                   % (rj['owner']['login'], rj['name'], rj['html_url']))
 
     def get_branches(self):
-        rj = requests.get('https://api.github.com/repos/%s/%s/branches' % (self.user, self.repo),
-                          auth=(self.login, self.passwd)).json()
+        rj = requests.get('https://api.github.com/repos/%s/%s/branches?page=1&per_page=100'
+                          % (self.user, self.repo), auth=(self.login, self.passwd)).json()
         print('branches list (%s):' % len(rj))
 
         for i in range(len(rj)):
@@ -71,8 +71,8 @@ class GithubUser:
         print()
 
     def get_pulls(self):
-        rj = requests.get('https://api.github.com/repos/%s/%s/pulls' % (self.user, self.repo),
-                          auth=(self.login, self.passwd)).json()
+        rj = requests.get('https://api.github.com/repos/%s/%s/pulls?page=1&per_page=100'
+                          % (self.user, self.repo), auth=(self.login, self.passwd)).json()
         print('pull requests (%s):' % len(rj))
 
         for i in range(len(rj)):
@@ -85,18 +85,22 @@ class GithubUser:
             for ll in rj[i]['labels']:
                 labels += "'" + ll['name'] + "' "
             print('Labels:', labels)
+            print('URL:', rj[i]['html_url'])
             if self.commits:
                 commits = rj[i]['commits_url']
-                rcj = requests.get(commits, auth=(self.login, self.passwd)).json()
+                rcj = requests.get(commits, auth=(
+                    self.login, self.passwd)).json()
                 print('Commits (%d):' % len(rcj))
                 print()
                 for cc in range(len(rcj)):
                     print('%d:' % (cc + 1))
                     print('\tCommitter: ', rcj[cc][
                           'commit']['committer']['name'])
-                    print('\tDate: ', rcj[cc]['commit']['committer']['date'])
-                    print('\tMessage: ', rcj[cc]['commit']['message'])
+                    print('\tDate: ', rcj[cc]['commit']['committer']['date'].replace('T', ' at ')
+                          .replace('Z', ''))
+                    print('\tMessage: ', "'%s'" % rcj[cc]['commit']['message'])
                     print('\tComments: ', rcj[cc]['commit']['comment_count'])
+                    print('\tURL: ', rcj[cc]['html_url'])
             print()
 
     def get_time(self):
