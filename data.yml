@@ -1,0 +1,10 @@
+vhosts:
+- servername: 'skazak-srv1'
+  documentroot: '/var/www/html'
+  directorypath: '/usr/local/httpd/htdocs'
+  admin: 'www-admin@foo.example.com'
+
+- servername: 'skazak-srv2'
+  documentroot: '/var/www/html'
+  directorypath: '/usr/local/httpd/htdocs'
+  admin: 'www-admin@foo.example.com'
