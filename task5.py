@@ -10,16 +10,9 @@ def sd_in_range(nrange):
         tmp = ""
 
         for digit in str(number):
-
-            # avoid division by 0
-            if int(digit) == 0:
-                break
-
-            # store valid digit into string
-            if number % int(digit) == 0:
+            if int(digit) != 0 and number % int(digit) == 0:
                 tmp += digit
 
-        # compare valid string with initial one
         if str(number) == tmp:
             out.append(number)
 
