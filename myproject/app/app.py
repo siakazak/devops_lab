@@ -10,11 +10,11 @@ def os_launch(proc, arg):
 
 @app.route('/')
 def task():
-    string = 'Python version: %s' % os_launch('python', '-V').split()[1] + '\n'
+    string = 'Python version: %s' % os_launch('python3', '-V').split()[1] + '\n'
     string += 'Flask version: %s' % os_launch('flask', '--version').split('\\n')[1].split()[1] + '\n'
     string += 'OS Name: %s' % os_launch('cat', '/etc/os-release').split('\\n')[0].split('=')[1] + '\n'
-    string += 'OS Family: %s' % os_launch('cat', '/etc/os-release').split('\\n')[1].split('=')[1] + '\n'
-    string += 'Release: %s' % os_launch('cat', '/etc/os-release').split('\\n')[3].split('=')[1] + '\n'
+    string += 'OS Release: %s' % os_launch('cat', '/etc/os-release').split('\\n')[1].split('=')[1] + '\n'
+    string += 'OS Family: %s' % os_launch('cat', '/etc/os-release').split('\\n')[3].split('=')[1] + '\n'
     string += 'Kernel version: %s' % os_launch('uname', '-r') + '\n'
     string += 'Hostname: %s' % os_launch('hostname', '-s') + '\n'
     string += 'IP: %s' % os_launch('hostname', '-i') + '\n'
